@@ -16,7 +16,7 @@
       <div class="jumbotron text-center">
         <h1>Mission to Mars</h1>
         <!-- Add a button to activate scraping script -->
-        <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+        <p><a class="btn btn-primary btn-lg btn-danger" href="/scrape" role="button">Scrape New Data</a></p>
       </div>
 
       <!-- Add section for Mars News -->
@@ -24,7 +24,7 @@
         <div class="col-md-12">
           <div class="media">
             <div class="media-body">
-              <h2>Latest Mars News</h2>
+              <h2 class="text-danger">Latest Mars News</h2>
               <h4 class="media-heading">{{ mars.news_title }}</h4>
               <p>{{ mars.news_paragraph }}</p>
             </div>
@@ -34,8 +34,8 @@
 
       <!-- Section for Featured Image and Facts table -->
       <div class="row" id="mars-featured-image">
-        <div class="col-md-8">
-          <h2>Featured Mars Image</h2>
+        <div class="col-md-8 col-xs-12">
+          <h2 class="text-danger">Featured Mars Image</h2>
 
           <!-- if images is False/None/non-existent, then default to error message -->
           <img
@@ -45,10 +45,10 @@
           />
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 col-xs-6">
           <!-- Mars Facts -->
           <div class="row" id="mars-facts">
-            <h4>Mars Facts</h4>
+            <h2 class="text-danger">Mars Facts</h2>
             {{ mars.facts | safe }}
           </div>
         </div>
@@ -57,14 +57,14 @@
       <!-- Section for Mars Hemispheres -->
       <div class="row" id="mars-hemispheres">
         <div class="page-header">
-          <h2 class="text-center">Mars Hemispheres</h2>
+          <h2 class="text-center text-danger">Mars Hemispheres</h2>
         </div>
 
-        {% for hemisphere in mars.hemispheres %}
+        {% for hemisphere in mars.mars_hemispheres %}
         <div class="col-md-6">
           <div class="thumbnail">
-            <img src="{{hemisphere.img_url | default('static/images/error.png', true)}}" alt="...">
-            <div class="caption">
+            <img src="{{hemisphere.img_url | default('static/images/error.png', true)}}" class="img-responsive img-circle" alt="Responsive Image">
+            <div class="caption text-center">
               <h3>{{hemisphere.title}}</h3>
             </div>
           </div>

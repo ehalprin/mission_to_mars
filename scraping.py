@@ -18,6 +18,7 @@ def scrape_all():
         "news_paragraph" : news_paragraph,
         "featured_image" : featured_image(browser),
         "facts": mars_facts(),
+        "mars_hemispheres": mars_hemispheres(browser),
         "last_modified": dt.datetime.now()
     }
 
@@ -91,10 +92,62 @@ def mars_facts():
         return None
     
     # Assign columns and set index of dataframe
-    df.columns = ['description', 'Mars', 'Earth']
-    df.set_index('description', inplace=True)
+    df.columns = ['Description', 'Mars', 'Earth']
+    df.set_index('Description', inplace=True)
 
-    return df.to_html()
+    return df.to_html(classes=["table table-bordered table-striped"])
+
+def mars_hemispheres(browser):
+    # Visit main URL
+    main_url = 'https://marshemispheres.com/'
+    browser.visit(main_url)
+
+    # Scrape main URL HTML
+    html = browser.html
+    hm_soup = soup(html, 'html.parser')
+
+    # List for hemisphere URLs and titles
+    hemisphere_image_urls = []
+
+    # Loop through hemispheres to collect URLs and titles
+    for h in range(0,4):
+    
+        # Create an empty dictionary
+        hemispheres = {}
+
+        # Select the 'results' section of the main URL
+        results_elem = hm_soup.select_one('div.full-content')
+
+        # Select the 'h' result
+        result_item = results_elem.find_all('div', class_='item')[h]
+
+        # Find the specific link associated with the 'h' result
+        href = result_item.find('a', class_='itemLink product-item').get('href')
+
+        # Visit the page for the 'h' result
+        browser.visit(f'{main_url}{href}')
+
+        # Scrape the HTML from the 'h' result URL
+        new_html = browser.html
+        new_soup = soup(new_html, 'html.parser')
+
+        # Get the URL for the high resolution photo
+        hm_url_rel = new_soup.find('img', class_='wide-image').get('src')
+        hm_url = f'{main_url}{hm_url_rel}'
+
+        # Get the title for the hemisphere
+        hm_title = new_soup.select_one('h2').get_text()
+
+        # Create a dictionary for the hemisphere data
+        hemispheres = {'img_url': hm_url, 'title': hm_title}
+
+        # Add the hemisphere data to the list
+        hemisphere_image_urls.append(hemispheres)
+
+        # Go back to start over
+        browser.back
+    
+    return hemisphere_image_urls
 
 if __name__ == "__main__":
 
